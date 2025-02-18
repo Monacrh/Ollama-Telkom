@@ -1,0 +1,5 @@
+.custom-dropdown-menu {
+  left: auto !important;
+  right: 0 !important;
+  transform: translateX(-100%) !important; /* Moves it to the left */
+}
