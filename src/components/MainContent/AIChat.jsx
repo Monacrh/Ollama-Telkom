@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Button, InputGroup, Form, ListGroup, Spinner } from 'react-bootstrap';
-import { FaPaperPlane, FaRobot } from 'react-icons/fa';
+import { FaPaperPlane, FaRobot, FaPaperclip, FaMicrophone, FaPlay } from 'react-icons/fa';
 
 function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }) {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [filePreview, setFilePreview] = useState(null);
+  const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   useEffect(() => {
     if (!aiChatContext.activeChat && chatHistory.length > 0) {
@@ -16,33 +21,79 @@ function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }
     }
   }, [aiChatContext, chatHistory, setAIChatContext]);
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFilePreview({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        url: URL.createObjectURL(file)
+      });
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        audioChunksRef.current.push(e.data);
+      };
+      
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current);
+        // Handle audio blob here (e.g., send to server)
+        console.log('Audio recorded:', audioBlob);
+        audioChunksRef.current = [];
+      };
+      
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!message.trim() || !aiChatContext.activeChat) return;
+    if ((!message.trim() && !filePreview) || !aiChatContext.activeChat) return;
 
-    // Add user message
+    // Create message object
     const userMessage = {
       text: message,
       sender: "user",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      file: filePreview
     };
 
+    // Update chat history
     const updatedChat = {
       ...aiChatContext.activeChat,
       messages: [...aiChatContext.activeChat.messages, userMessage]
     };
 
-    // Update state
     setChatHistory(prev => 
       prev.map(chat => 
         chat.id === updatedChat.id ? updatedChat : chat
       )
     );
+    
     setAIChatContext(prev => ({
       ...prev,
       activeChat: updatedChat
     }));
+    
     setMessage('');
+    setFilePreview(null);
     setIsLoading(true);
 
     // Simulate AI response
@@ -63,10 +114,12 @@ function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }
           chat.id === updatedWithAI.id ? updatedWithAI : chat
         )
       );
+      
       setAIChatContext(prev => ({
         ...prev,
         activeChat: updatedWithAI
       }));
+      
       setIsLoading(false);
     }, 1500);
   };
@@ -100,7 +153,30 @@ function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }
                   }`}
                   style={{ maxWidth: '75%' }}
                 >
-                  {msg.text}
+                  {msg.file && (
+                    <div className="mb-2">
+                      {msg.file.type.startsWith('image/') ? (
+                        <img 
+                          src={msg.file.url} 
+                          alt="Attachment" 
+                          className="img-fluid rounded-3"
+                        />
+                      ) : (
+                        <div className="d-flex align-items-center p-2 bg-light rounded-3">
+                          <FaPaperclip className="me-2" />
+                          <div>
+                            <div className="small">{msg.file.name}</div>
+                            <div className="text-muted small">
+                              {(msg.file.size / 1024).toFixed(1)} KB
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {msg.text && <div>{msg.text}</div>}
+                  
                   <div className={`small mt-1 ${msg.sender === 'user' ? 'text-white-50' : 'text-muted'}`}>
                     {new Date(msg.timestamp).toLocaleTimeString()}
                   </div>
@@ -121,27 +197,86 @@ function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }
         </ListGroup>
       </div>
 
+      {/* File Preview */}
+      {filePreview && (
+        <div className="p-2 border-top bg-light">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center">
+              <FaPaperclip className="me-2" />
+              <span className="small">{filePreview.name}</span>
+            </div>
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-danger"
+              onClick={() => setFilePreview(null)}
+            >
+              Remove
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Input Area */}
-      <Form onSubmit={handleSendMessage} className="border-top pt-2">
-        <InputGroup>
-          <Form.Control
-            placeholder="Type your message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="rounded-pill"
-            disabled={isLoading}
-          />
-          <Button 
-            variant="primary" 
-            type="submit"
-            className="rounded-circle ms-2"
-            style={{ width: '40px', height: '40px' }}
-            disabled={isLoading}
-          >
-            <FaPaperPlane />
-          </Button>
-        </InputGroup>
-      </Form>
+      <div className="p-2 border-top bg-light">
+        <Form onSubmit={handleSendMessage}>
+          <InputGroup>
+            <Button 
+              variant="link" 
+              onClick={() => fileInputRef.current.click()}
+              disabled={isLoading}
+            >
+              <FaPaperclip />
+            </Button>
+            <input
+              type="file"
+              hidden
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              disabled={isLoading}
+            />
+
+            {isRecording ? (
+              <Button
+                variant="danger"
+                onClick={stopRecording}
+                className="rounded-pill"
+              >
+                <FaMicrophone /> Stop
+              </Button>
+            ) : (
+              <Form.Control
+                placeholder="Type a message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="rounded-pill mx-1"
+                onFocus={() => setIsRecording(false)}
+                disabled={isLoading}
+              />
+            )}
+
+            {(message || filePreview) ? (
+              <Button 
+                variant="primary" 
+                type="submit"
+                className="rounded-circle"
+                disabled={isLoading}
+              >
+                <FaPaperPlane />
+              </Button>
+            ) : (
+              <Button
+                variant={isRecording ? 'danger' : 'link'}
+                onClick={isRecording ? stopRecording : startRecording}
+                className="rounded-circle"
+                disabled={isLoading}
+              >
+                {isRecording ? <FaPlay /> : <FaMicrophone />}
+              </Button>
+            )}
+          </InputGroup>
+        </Form>
+      </div>
     </div>
   );
 }
