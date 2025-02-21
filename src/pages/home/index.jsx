@@ -5,7 +5,7 @@ import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
-function App() {
+function Home() {
   // Group and Chat State
   const [groups, setGroups] = useState([
     { 
@@ -113,4 +113,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
