@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
 import { Button, Collapse, ListGroup, Dropdown } from 'react-bootstrap';
 import { FaUsers, FaEllipsisV } from 'react-icons/fa';
 
@@ -36,14 +37,19 @@ function GroupsSection({
                 className="d-flex justify-content-between align-items-center"
               >
                 {/* Group info with separate click handler */}
-                <div 
-                  className="flex-grow-1" 
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setSelectedGroup(group)}
+                <Link 
+                  to={`/k/${group.id}`}
+                  className="text-decoration-none text-reset"
                 >
-                  <div>{group.name}</div>
-                  <small className="text-muted">{group.members.length} members</small>
-                </div>
+                  <div 
+                    className="flex-grow-1" 
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setSelectedGroup(group)}
+                  >
+                      <div>{group.name}</div>
+                      <small className="text-muted">{group.members.length} members</small>
+                  </div>
+                </Link>
 
                 {/* Dropdown with click prevention */}
                 <Dropdown 
