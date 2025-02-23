@@ -34,6 +34,47 @@ const dummyKelas = {
   ],
 };
 
+const dummyChat = {
+  user_id: 1,
+  group_id: 1,
+  name: "103012380496",
+  chats: [
+    {
+      id: 1,
+      title: "General Chat",
+      timestamp: new Date().toISOString(),
+      messages: [
+        {
+          text: "Hello, everyone!",
+          sender: "user",
+          timestamp: new Date().toISOString()
+        },
+        {
+          text: "Hi, John!",
+          sender: "ai",
+          timestamp: new Date().toISOString()
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "What is Quantum Physics?",
+      timestamp: new Date().toISOString(),
+      messages: [
+        {
+          text: "Explain quantum entanglement",
+          sender: "user",
+          timestamp: new Date().toISOString()
+        },
+        {
+          text: "Quantum entanglement is a physical phenomenon that occurs when...",
+          sender: "ai",
+          timestamp: new Date().toISOString()
+        }
+      ]
+    }
+]};
+
 function Sidebar({
   groups,
   chats,
@@ -137,10 +178,6 @@ function Sidebar({
 
       {pathname === `/k/${kelasId}` && (
         <>
-          <div>
-            {`/k/${kelasId}`}
-          </div>
-
           {/* What it shows when a group is selected */}
           <div className="d-flex flex-column h-100">
             <div className="d-flex align-items-center mb-3">
@@ -159,7 +196,7 @@ function Sidebar({
             {/* Search Bar */}
             <div className="border-top pt-3">
               <form className="d-flex" role="search">
-                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"></input>
+                <input className="form-control me-2" type="search" placeholder="Cari Nama/Email" aria-label="Cari Nama/Email"></input>
                 <button className="btn btn-outline-success" type="submit">
                   <BsSearch />
                 </button>
@@ -207,7 +244,66 @@ function Sidebar({
 
       {pathname === `/k/${kelasId}/a/${anggotaId}` && (
         <>
-          {`/k/${kelasId}/a/${anggotaId}`}
+          {/* What it shows when a group is selected */}
+          <div className="d-flex flex-column h-100">
+            <div className="d-flex align-items-center mb-3">
+              <Button 
+                variant="link" 
+                className="me-2 p-0" 
+                onClick={() => setSelectedGroup(null)}
+              >
+                <Link to={`/k/${dummyChat.group_id}`}>
+                  <FaAngleLeft />
+                </Link>
+              </Button>
+              <h5 className="mb-0">{dummyChat.name}</h5>
+            </div>
+
+            {/* Search Bar */}
+            <div className="border-top pt-3">
+              <form className="d-flex" role="search">
+                <input className="form-control me-2" type="search" placeholder="Cari Chat Prompt" aria-label="Cari Chat Prompt"></input>
+                <button className="btn btn-outline-success" type="submit">
+                  <BsSearch />
+                </button>
+              </form>
+
+              <h6>Chat List</h6>
+              <ListGroup>
+                {dummyChat.chats.map((chat) => (
+                  <ListGroup.Item key={chat.id}>
+                    <Link to={`c/${chat.id}`} className='text-decoration-none text-reset'>
+                      <div className="d-flex flex-column justify-content-between align-items-center">
+                        <div>{chat.title}</div>
+                      </div>
+                    </Link>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </div>
+          </div>
+
+          <Button 
+            variant="outline-secondary" 
+            className="position-absolute top-0 end-0 m-2" 
+            onClick={() => setIsOpen(false)}
+          >
+            <FaAngleLeft />
+          </Button>
+
+          {showCreateClass ? (
+            <CreateClassForm
+              setGroups={setGroups}
+              setShowCreateClass={setShowCreateClass}
+            />
+          ) : (
+            <>
+              <CreateButton 
+                setChats={setChats}
+                setShowCreateClass={setShowCreateClass}
+              />
+            </>
+          )}
         </>
       )}
     </Col>
