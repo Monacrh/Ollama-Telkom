@@ -37,7 +37,10 @@ function GroupsSection({
                 className="d-flex justify-content-between align-items-center"
               >
                 {/* Group info with separate click handler */}
-                <Link to={`/k/${group.id}`}>
+                <Link 
+                  to={`/k/${group.id}`}
+                  className="text-decoration-none text-reset"
+                >
                   <div 
                     className="flex-grow-1" 
                     style={{ cursor: 'pointer' }}
