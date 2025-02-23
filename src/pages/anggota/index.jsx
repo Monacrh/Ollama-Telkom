@@ -69,10 +69,37 @@ function Anggota() {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-      <div>
-        <h1>Kelas {kelasId} {anggotaId}</h1>
-      </div>
+    <>
+      <Sidebar
+        groups={groups}
+        chats={chats}
+        isOpen={isSidebarOpen}
+        setGroups={setGroups}
+        setChats={setChats}
+        setIsOpen={setIsSidebarOpen}
+        setModalContent={setModalContent}
+        setShowModal={setShowModal}
+        showCreateClass={showCreateClass}
+        setShowCreateClass={setShowCreateClass}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
+        aiChatContext={aiChatContext}
+        setAIChatContext={setAIChatContext}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+      />
+      
+      <MainContent 
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+        selectedGroup={selectedGroup}
+        aiChatContext={aiChatContext}
+        setAIChatContext={setAIChatContext}
+        groups={groups}
+        setGroups={setGroups}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+      />
 
       <ConfirmationModal
         show={showModal}
@@ -80,7 +107,7 @@ function Anggota() {
         content={modalContent}
         onConfirm={handleConfirmAction}
       />
-    </div>
+    </>
   );
 }
 
