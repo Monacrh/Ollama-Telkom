@@ -114,11 +114,11 @@ function Sidebar({
   // );
 
   const filteredChats = dummyChat.chats.filter(chat => {
-    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    return chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     chat.messages.some(msg => {
-      msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+      return msg.text.toLowerCase().includes(searchQuery.toLowerCase())
     })
-  })
+  });
 
   const handleNewAIChat = () => {
     const newChat = {
