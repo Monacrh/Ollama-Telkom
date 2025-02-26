@@ -306,7 +306,7 @@ function Sidebar({
                       activeChat: chat
                     }))}
                     className="d-flex justify-content-between align-items-center"
-                    active={chat.id === aiChatContext.activeChat?.id}
+                    active={aiChatContext && chat.id === aiChatContext.activeChat?.id}
                   >
                     <div>
                       <div>{chat.title}</div>
