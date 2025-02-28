@@ -11,9 +11,31 @@ function Home() {
     { 
       id: 1, 
       name: "Sample Group", 
-      members: ["student1@telkom.com", "student2@telkom.com"],
+      members: [{
+        id: '1',
+        name: "103012380499",
+        email: "coder01at@gmail.com"
+      },{
+        id: '2',
+        name: "103012380490",
+        email: "coder02at@gmail.com"
+      }],
       messages: []
-    }
+    },
+    // {
+    //   id: 2, 
+    //   name: "Kelas IFX-47-01", 
+    //   members: [{
+    //     id: '1',
+    //     name: "103012380496",
+    //     email: "coder11at@gmail.com"
+    //   },{
+    //     id: '2',
+    //     name: "103012380497",
+    //     email: "coder12at@gmail.com"
+    //   }],
+    //   messages: []
+    // }
   ]);
   
   const [chats, setChats] = useState(["General Chat"]);

@@ -206,7 +206,6 @@ function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
   );
 }
 
-// Add this CSS to your stylesheet
 const styles = `
 .bg-chat {
   background-color: #ece5dd;

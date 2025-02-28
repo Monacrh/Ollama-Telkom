@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
-import { useLocation, useParams, Link } from 'react-router';
-
+import { useLocation, useParams, Link, useNavigate } from 'react-router';
 import GroupsSection from './GroupSection';
 import ChatsSection from './ChatSection';
 import CreateButton from './CreateButton';
 import CreateClassForm from './CreateKelas';
-
 import { FaAngleLeft, FaRobot, FaSearch } from 'react-icons/fa';
 import { BsSearch } from "react-icons/bs";
 
 const dummyUser = {
   name: "John Doe",
   email: "john.doe@telkom.university"
-  // avatar: "👨💻"
 };
 
 const dummyKelas = {
@@ -56,25 +53,9 @@ const dummyChat = {
           timestamp: new Date().toISOString()
         }
       ]
-    },
-    {
-      id: 2,
-      title: "What is Quantum Physics?",
-      timestamp: new Date().toISOString(),
-      messages: [
-        {
-          text: "Explain quantum entanglement",
-          sender: "user",
-          timestamp: new Date().toISOString()
-        },
-        {
-          text: "Quantum entanglement is a physical phenomenon that occurs when...",
-          sender: "ai",
-          timestamp: new Date().toISOString()
-        }
-      ]
     }
-]};
+  ]
+};
 
 function Sidebar({
   groups,
@@ -96,29 +77,29 @@ function Sidebar({
 }) {
   const { pathname } = useLocation();
   const { kelasId, anggotaId } = useParams();
-
+  const navigate = useNavigate();
+  
   const [groupDropdownOpen, setGroupDropdownOpen] = useState(true);
   const [chatDropdownOpen, setChatDropdownOpen] = useState(true);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [memberSearchQuery, setMemberSearchQuery] = useState('');
 
   const toggleMenu = (id) => {
     setActiveMenuId(activeMenuId === id ? null : id);
   };
 
-  // const filteredChats = chatHistory.filter(chat =>
-  //   chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //   chat.messages.some(msg => 
-  //     msg.text.toLowerCase().includes(searchQuery.toLowerCase())
-  //   )
-  // );
+  const filteredChats = dummyChat.chats.filter(chat => 
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    chat.messages.some(msg => 
+      msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
-  const filteredChats = dummyChat.chats.filter(chat => {
-    return chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    chat.messages.some(msg => {
-      return msg.text.toLowerCase().includes(searchQuery.toLowerCase())
-    })
-  });
+  const filteredMembers = dummyKelas.members.filter(member =>
+    member.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+    member.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
+  );
 
   const handleNewAIChat = () => {
     const newChat = {
@@ -133,7 +114,15 @@ function Sidebar({
       activeChat: newChat,
       user: dummyUser
     });
+    navigate(`/k/${dummyKelas.id}/a/ai`);
   };
+
+  useEffect(() => {
+    if (kelasId) {
+      const selected = groups.find((group) => group.id === parseInt(kelasId));
+      setSelectedGroup(selected || null);
+    }
+  }, [kelasId, groups, setSelectedGroup]);
 
   return (
     <Col 
@@ -145,7 +134,7 @@ function Sidebar({
         overflowY: 'auto' 
       }}
     >
-      {pathname === `/` && (
+      {pathname === '/' && (
         <>
           <Button 
             variant="outline-secondary" 
@@ -194,143 +183,58 @@ function Sidebar({
 
       {pathname === `/k/${kelasId}` && (
         <>
-          {/* What it shows when a group is selected */}
           <div className="d-flex flex-column h-100">
             <div className="d-flex align-items-center mb-3">
-              <Button 
-                variant="link" 
-                className="me-2 p-0" 
-                onClick={() => setSelectedGroup(null)}
-              >
-                <Link to="/">
+              <Link to="/">
+                <Button 
+                  variant="link" 
+                  className="me-2 p-0" 
+                >
                   <FaAngleLeft />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               <h5 className="mb-0">{dummyKelas.name}</h5>
             </div>
 
-            {/* Search Bar */}
             <div className="border-top pt-3">
-              <form className="d-flex" role="search">
-                <input className="form-control me-2" type="search" placeholder="Cari Nama/Email" aria-label="Cari Nama/Email"></input>
-                <button className="btn btn-outline-success" type="submit">
+              <Form className="d-flex mb-3">
+                <Form.Control
+                  type="search"
+                  placeholder="Cari Nama/Email"
+                  value={memberSearchQuery}
+                  onChange={(e) => setMemberSearchQuery(e.target.value)}
+                />
+                <Button variant="outline-success">
                   <BsSearch />
-                </button>
-              </form>
+                </Button>
+              </Form>
 
               <h6>Group Members</h6>
               <ListGroup>
-                {dummyKelas.members.map((member, index) => (
-                  <ListGroup.Item key={index}>
-                    <Link to={`a/${member.id}`} className='text-decoration-none text-reset'>
-                      <div className="d-flex flex-column justify-content-between align-items-center">
+                {filteredMembers.map((member) => (
+                  <ListGroup.Item key={member.id}>
+                    <Link 
+                      to={`a/${member.id}`} 
+                      relative="path"
+                      className="text-decoration-none text-reset"
+                    >
+                      <div className="d-flex flex-column">
                         <div>{member.name}</div>
-                        <div>{member.email}</div>
+                        <small className="text-muted">{member.email}</small>
                       </div>
                     </Link>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
             </div>
-          </div>
 
-          <Button 
-            variant="outline-secondary" 
-            className="position-absolute top-0 end-0 m-2" 
-            onClick={() => setIsOpen(false)}
-          >
-            <FaAngleLeft />
-          </Button>
-
-          {showCreateClass ? (
-            <CreateClassForm
-              setGroups={setGroups}
-              setShowCreateClass={setShowCreateClass}
-            />
-          ) : (
-            <>
-              <CreateButton 
-                setChats={setChats}
-                setShowCreateClass={setShowCreateClass}
-              />
-            </>
-          )}
-        </>
-      )}
-
-      {pathname === `/k/${kelasId}/a/${anggotaId}` && (
-        <>
-          {/* What it shows when a user is selected */}
-          <div className="d-flex flex-column h-100">
-            {/* User Profile Section */}
-            <div className="border-bottom pb-3 mb-3">
-              <div className="d-flex align-items-center">
-                <Link 
-                  to={`/k/${dummyChat.group_id}`}
-                  className="p-0 me-2"
-                  onClick={() => setAIChatContext(null)}
-                >
-                  <FaAngleLeft />
-                </Link>
-                <div>
-                  <div className="fw-bold">{dummyChat.name}</div>
-                  <small className="text-muted">{dummyChat.email}</small>
-                </div>
-              </div>
-            </div>
-
-            {/* Search Bar */}
-            <div className="mb-3 px-2">
-              <InputGroup>
-                <Form.Control
-                  placeholder="Search chat history..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-pill"
-                />
-                <InputGroup.Text className="bg-transparent border-0">
-                  <FaSearch className="text-muted" />
-                </InputGroup.Text>
-              </InputGroup>
-            </div>
-
-            {/* Chat History */}
-            <div className="flex-grow-1 overflow-auto">
-              <ListGroup variant="flush">
-                {filteredChats.map((chat) => (
-                  <ListGroup.Item 
-                    key={chat.id}
-                    action
-                    onClick={() => setAIChatContext(prev => ({
-                      ...prev,
-                      activeChat: chat
-                    }))}
-                    className="d-flex justify-content-between align-items-center"
-                    active={aiChatContext && chat.id === aiChatContext.activeChat?.id}
-                  >
-                    <div>
-                      <div>{chat.title}</div>
-                      <small className="text-muted">
-                        {new Date(chat.timestamp).toLocaleDateString()}
-                      </small>
-                    </div>
-                  </ListGroup.Item>
-                ))}
-                {filteredChats.length === 0 && (
-                  <ListGroup.Item className="text-muted text-center">
-                    No matching chats found
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-            {/* New Chat Button */}
             <Button 
               variant="primary" 
               className="position-absolute bottom-0 end-0 m-3 rounded-circle"
               style={{ width: '50px', height: '50px' }}
               onClick={handleNewAIChat}
             >
-              +
+              <FaRobot />
             </Button>
           </div>
 
@@ -342,6 +246,77 @@ function Sidebar({
             <FaAngleLeft />
           </Button>
         </>
+      )}
+
+      {(pathname === `/k/${kelasId}/a/${anggotaId}` || pathname === `/k/${kelasId}/a/ai`) && (
+        <div className="d-flex flex-column h-100">
+          <div className="border-bottom pb-3 mb-3">
+            <div className="d-flex align-items-center">
+              <Link 
+                to={`/k/${kelasId}`}
+                className="p-0 me-2"
+                onClick={() => setAIChatContext(null)}
+              >
+                <FaAngleLeft />
+              </Link>
+              <div>
+                <div className="fw-bold">
+                  {pathname.includes('ai') ? dummyUser.name : dummyChat.name}
+                </div>
+                <small className="text-muted">
+                  {pathname.includes('ai') ? dummyUser.email : dummyChat.email}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 px-2">
+            <InputGroup>
+              <Form.Control
+                placeholder="Search chat history..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-pill"
+              />
+              <InputGroup.Text className="bg-transparent border-0">
+                <FaSearch className="text-muted" />
+              </InputGroup.Text>
+            </InputGroup>
+          </div>
+
+          <div className="flex-grow-1 overflow-auto">
+            <ListGroup variant="flush">
+              {filteredChats.map((chat) => (
+                <ListGroup.Item 
+                  key={chat.id}
+                  action
+                  onClick={() => setAIChatContext(prev => ({
+                    ...prev,
+                    activeChat: chat
+                  }))}
+                  className="d-flex justify-content-between align-items-center"
+                  active={aiChatContext?.activeChat?.id === chat.id}
+                >
+                  <div>
+                    <div>{chat.title}</div>
+                    <small className="text-muted">
+                      {new Date(chat.timestamp).toLocaleDateString()}
+                    </small>
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </div>
+
+          <Button 
+            variant="primary" 
+            className="position-absolute bottom-0 end-0 m-3 rounded-circle"
+            style={{ width: '50px', height: '50px' }}
+            onClick={handleNewAIChat}
+          >
+            +
+          </Button>
+        </div>
       )}
     </Col>
   );
