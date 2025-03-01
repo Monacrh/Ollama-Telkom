@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import { Button, InputGroup, Form, ListGroup, Spinner } from 'react-bootstrap';
 import { FaPaperPlane, FaRobot, FaPaperclip, FaMicrophone, FaPlay } from 'react-icons/fa';
 
+const user = {
+  role: 'student',
+  name: 'John Doe',
+  email: "johndoe@gmail.com",
+  id: 'teacher1'
+}
+
 function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }) {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -218,65 +225,68 @@ function AIChat({ aiChatContext, setAIChatContext, chatHistory, setChatHistory }
       )}
 
       {/* Input Area */}
-      <div className="p-2 border-top bg-light">
-        <Form onSubmit={handleSendMessage}>
-          <InputGroup>
-            <Button 
-              variant="link" 
-              onClick={() => fileInputRef.current.click()}
-              disabled={isLoading}
-            >
-              <FaPaperclip />
-            </Button>
-            <input
-              type="file"
-              hidden
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-              disabled={isLoading}
-            />
-
-            {isRecording ? (
-              <Button
-                variant="danger"
-                onClick={stopRecording}
-                className="rounded-pill"
+      {!(user.role === 'teacher' || user.role === 'admin') && (
+        <div className="p-2 border-top bg-light">
+          <Form onSubmit={handleSendMessage}>
+            <InputGroup>
+              <Button 
+                variant="link" 
+                onClick={() => fileInputRef.current.click()}
+                disabled={isLoading}
               >
-                <FaMicrophone /> Stop
+                <FaPaperclip />
               </Button>
-            ) : (
-              <Form.Control
-                placeholder="Type a message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="rounded-pill mx-1"
-                onFocus={() => setIsRecording(false)}
+              <input
+                type="file"
+                hidden
+                ref={fileInputRef}
+                onChange={handleFileUpload}
                 disabled={isLoading}
               />
-            )}
 
-            {(message || filePreview) ? (
-              <Button 
-                variant="primary" 
-                type="submit"
-                className="rounded-circle"
-                disabled={isLoading}
-              >
-                <FaPaperPlane />
-              </Button>
-            ) : (
-              <Button
-                variant={isRecording ? 'danger' : 'link'}
-                onClick={isRecording ? stopRecording : startRecording}
-                className="rounded-circle"
-                disabled={isLoading}
-              >
-                {isRecording ? <FaPlay /> : <FaMicrophone />}
-              </Button>
-            )}
-          </InputGroup>
-        </Form>
-      </div>
+              {isRecording ? (
+                <Button
+                  variant="danger"
+                  onClick={stopRecording}
+                  className="rounded-pill"
+                >
+                  <FaMicrophone /> Stop
+                </Button>
+              ) : (
+                <Form.Control
+                  placeholder="Type a message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="rounded-pill mx-1"
+                  onFocus={() => setIsRecording(false)}
+                  disabled={isLoading}
+                />
+              )}
+
+              {(message || filePreview) ? (
+                <Button 
+                  variant="primary" 
+                  type="submit"
+                  className="rounded-circle"
+                  disabled={isLoading}
+                >
+                  <FaPaperPlane />
+                </Button>
+              ) : (
+                <Button
+                  variant={isRecording ? 'danger' : 'link'}
+                  onClick={isRecording ? stopRecording : startRecording}
+                  className="rounded-circle"
+                  disabled={isLoading}
+                >
+                  {isRecording ? <FaPlay /> : <FaMicrophone />}
+                </Button>
+              )}
+            </InputGroup>
+          </Form>
+        </div>
+      )}
+      
     </div>
   );
 }

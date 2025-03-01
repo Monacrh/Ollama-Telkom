@@ -10,9 +10,11 @@ import { FaAngleLeft, FaRobot, FaSearch } from 'react-icons/fa';
 import { BsSearch } from "react-icons/bs";
 
 const dummyUser = {
-  name: "John Doe",
-  email: "john.doe@telkom.university"
-};
+  role: 'teacher',
+  name: 'John Doe',
+  email: "johndoe@gmail.com",
+  id: 'teacher1'
+}
 
 const dummyKelas = {
   id: 1,
@@ -308,14 +310,16 @@ function Sidebar({
             </ListGroup>
           </div>
 
-          <Button 
-            variant="primary" 
-            className="position-absolute bottom-0 end-0 m-3 rounded-circle"
-            style={{ width: '50px', height: '50px' }}
-            onClick={handleNewAIChat}
-          >
-            +
-          </Button>
+          {dummyUser.role === 'student' && (
+            <Button 
+              variant="primary" 
+              className="position-absolute bottom-0 end-0 m-3 rounded-circle"
+              style={{ width: '50px', height: '50px' }}
+              onClick={handleNewAIChat}
+            >
+              +
+            </Button>  
+          )}
         </div>
       )}
     </Col>
