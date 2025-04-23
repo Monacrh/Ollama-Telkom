@@ -16,9 +16,10 @@ ReactDOM.createRoot(root).render(
   <BrowserRouter>
     <StrictMode>
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="k/:kelasId" element={<Kelas />}>
-          <Route path="a/:anggotaId" element={<Anggota />} />
+        <Route path="/" element={<Home />}>
+          <Route path="k/:classID" element={<Kelas />}>
+            <Route path="a/:memberID" element={<Anggota />} />
+          </Route>
         </Route>
       </Routes>
     </StrictMode>

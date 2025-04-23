@@ -5,7 +5,11 @@ import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
+import { Outlet, useLocation } from "react-router";
+
 function Home() {
+  const location = useLocation();
+
   // Group and Chat State
   const [groups, setGroups] = useState([
     { 
@@ -89,41 +93,42 @@ function Home() {
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <NavbarComponent />
-      
-      <Container fluid className="flex-grow-1">
-        <Row className="h-100" style={{ minHeight: "calc(100vh - 56px)" }}>
-          <Sidebar
-            groups={groups}
-            chats={chats}
-            isOpen={isSidebarOpen}
-            setGroups={setGroups}
-            setChats={setChats}
-            setIsOpen={setIsSidebarOpen}
-            setModalContent={setModalContent}
-            setShowModal={setShowModal}
-            showCreateClass={showCreateClass}
-            setShowCreateClass={setShowCreateClass}
-            selectedGroup={selectedGroup}
-            setSelectedGroup={setSelectedGroup}
-            aiChatContext={aiChatContext}
-            setAIChatContext={setAIChatContext}
-            chatHistory={chatHistory}
-            setChatHistory={setChatHistory}
-          />
-          
-          <MainContent 
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
-            selectedGroup={selectedGroup}
-            aiChatContext={aiChatContext}
-            setAIChatContext={setAIChatContext}
-            groups={groups}
-            setGroups={setGroups}
-            chatHistory={chatHistory}
-            setChatHistory={setChatHistory}
-          />
-        </Row>
-      </Container>
+      {location.pathname === "" ? (<Outlet />) : (
+        <Container fluid className="flex-grow-1">
+          <Row className="h-100" style={{ minHeight: "calc(100vh - 56px)" }}>
+            <Sidebar
+              groups={groups}
+              chats={chats}
+              isOpen={isSidebarOpen}
+              setGroups={setGroups}
+              setChats={setChats}
+              setIsOpen={setIsSidebarOpen}
+              setModalContent={setModalContent}
+              setShowModal={setShowModal}
+              showCreateClass={showCreateClass}
+              setShowCreateClass={setShowCreateClass}
+              selectedGroup={selectedGroup}
+              setSelectedGroup={setSelectedGroup}
+              aiChatContext={aiChatContext}
+              setAIChatContext={setAIChatContext}
+              chatHistory={chatHistory}
+              setChatHistory={setChatHistory}
+            />
+            
+            <MainContent 
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+              selectedGroup={selectedGroup}
+              aiChatContext={aiChatContext}
+              setAIChatContext={setAIChatContext}
+              groups={groups}
+              setGroups={setGroups}
+              chatHistory={chatHistory}
+              setChatHistory={setChatHistory}
+            />
+          </Row>
+        </Container>
+      )}
 
       <ConfirmationModal
         show={showModal}
