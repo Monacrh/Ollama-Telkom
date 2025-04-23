@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { useState } from "react";
+import { Container, Row } from "react-bootstrap";
 import NavbarComponent from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";
@@ -26,20 +26,6 @@ function Home() {
       }],
       messages: []
     },
-    // {
-    //   id: 2, 
-    //   name: "Kelas IFX-47-01", 
-    //   members: [{
-    //     id: '1',
-    //     name: "103012380496",
-    //     email: "coder11at@gmail.com"
-    //   },{
-    //     id: '2',
-    //     name: "103012380497",
-    //     email: "coder12at@gmail.com"
-    //   }],
-    //   messages: []
-    // }
   ]);
   
   const [chats, setChats] = useState(["General Chat"]);
@@ -93,7 +79,7 @@ function Home() {
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <NavbarComponent />
-      {location.pathname === "" ? (<Outlet />) : (
+      {location.pathname === "/" ? (
         <Container fluid className="flex-grow-1">
           <Row className="h-100" style={{ minHeight: "calc(100vh - 56px)" }}>
             <Sidebar
@@ -128,7 +114,8 @@ function Home() {
             />
           </Row>
         </Container>
-      )}
+      ) : (<Outlet />)  
+    }
 
       <ConfirmationModal
         show={showModal}

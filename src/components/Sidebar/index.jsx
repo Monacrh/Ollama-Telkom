@@ -217,7 +217,6 @@ function Sidebar({
                   <ListGroup.Item key={member.id}>
                     <Link 
                       to={`a/${member.id}`} 
-                      relative="path"
                       className="text-decoration-none text-reset"
                     >
                       <div className="d-flex flex-column">

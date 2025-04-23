@@ -70,9 +70,7 @@ function Kelas() {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-      <NavbarComponent />
-      
+    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>      
       <Container fluid className="flex-grow-1">
         <Row className="h-100" style={{ minHeight: "calc(100vh - 56px)" }}>
           { pathname === `/k/${kelasId}` ? (
