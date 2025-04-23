@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setIsSidebarOpen } from '../../stores/slices/uiStateSlice';
 
 function MainContent({
+  setSelectedGroup,
   selectedGroup,
   aiChatContext,
   setAIChatContext,
@@ -48,6 +49,7 @@ function MainContent({
           group={selectedGroup}
           groups={groups}
           setGroups={setGroups}
+          setSelectedGroup={setSelectedGroup}
         />
       ) : (
         <div className="text-center w-100">

@@ -101,6 +101,7 @@ function Home() {
               setGroups={setGroups}
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}
+              setSelectedGroup={setSelectedGroup}
             />
           </Row>
         </Container>

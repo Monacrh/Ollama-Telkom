@@ -93,6 +93,7 @@ function Kelas() {
                 setGroups={setGroups}
                 chatHistory={chatHistory}
                 setChatHistory={setChatHistory}
+                setSelectedGroup={setSelectedGroup}
               />
             </>
             ) : (<Outlet />)

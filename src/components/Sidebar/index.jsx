@@ -189,13 +189,12 @@ function Sidebar({
         <>
           <div className="d-flex flex-column h-100">
             <div className="d-flex align-items-center mb-3">
-              <Link to="/">
-                <Button 
-                  variant="link" 
-                  className="me-2 p-0" 
-                >
-                  <FaAngleLeft />
-                </Button>
+              <Link 
+                to="/"
+                variant="link" 
+                className="me-2 p-0" 
+              >
+                <FaAngleLeft />
               </Link>
               <h5 className="mb-0">{dummyKelas.name}</h5>
             </div>
