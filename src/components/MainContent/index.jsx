@@ -1,21 +1,22 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Button } from 'react-bootstrap';
 import { FaAngleRight } from 'react-icons/fa';
 import GroupChat from './GroupChat';
 import AIChat from './AIChat';
 
-function MainContent({ 
-  isSidebarOpen, 
-  setIsSidebarOpen,
+import { useSelector, useDispatch } from 'react-redux';
+import { setIsSidebarOpen } from '../../stores/slices/uiStateSlice';
+
+function MainContent({
   selectedGroup,
   aiChatContext,
   setAIChatContext,
   groups,
   setGroups,
-  chatHistory,
-  setChatHistory
 }) {
+  const dispatch = useDispatch();
+  const isSidebarOpen = useSelector((state) => state.uiState.isSidebarOpen);
+
   return (
     <Col 
       md={isSidebarOpen ? 9 : 12} 
@@ -29,7 +30,7 @@ function MainContent({
         <Button 
           variant="outline-secondary" 
           className="position-absolute start-0 m-2" 
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => dispatch(setIsSidebarOpen(true))}
         >
           <FaAngleRight />
         </Button>
@@ -39,8 +40,8 @@ function MainContent({
         <AIChat 
           aiChatContext={aiChatContext}
           setAIChatContext={setAIChatContext}
-          chatHistory={chatHistory}
-          setChatHistory={setChatHistory}
+          // chatHistory={chatHistory}
+          // setChatHistory={setChatHistory}
         />
       ) : selectedGroup ? (
         <GroupChat 

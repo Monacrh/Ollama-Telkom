@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
 import { useLocation, useParams, Link, useNavigate } from 'react-router';
@@ -8,6 +8,9 @@ import CreateButton from './CreateButton';
 import CreateClassForm from './CreateKelas';
 import { FaAngleLeft, FaRobot, FaSearch } from 'react-icons/fa';
 import { BsSearch } from "react-icons/bs";
+
+import { useSelector, useDispatch } from 'react-redux';
+import { setIsSidebarOpen, setModalContent, setShowCreateClass, setShowModal } from '../../stores/slices/uiStateSlice';
 
 const dummyUser = {
   role: 'teacher',
@@ -62,15 +65,9 @@ const dummyChat = {
 function Sidebar({
   groups,
   chats,
-  isOpen,
   setGroups,
   setChats,
-  setIsOpen,
-  setModalContent,
-  setShowModal,
-  showCreateClass,
-  setShowCreateClass,
-  selectedGroup,
+  // selectedGroup,
   setSelectedGroup,
   aiChatContext,
   setAIChatContext,
@@ -80,6 +77,11 @@ function Sidebar({
   const { pathname } = useLocation();
   const { kelasId, anggotaId } = useParams();
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const isSidebarOpen = useSelector((state) => state.uiState.isSidebarOpen);
+  const showCreateClass = useSelector((state) => state.uiState.showCreateClass);
   
   const [groupDropdownOpen, setGroupDropdownOpen] = useState(true);
   const [chatDropdownOpen, setChatDropdownOpen] = useState(true);
@@ -128,8 +130,8 @@ function Sidebar({
 
   return (
     <Col 
-      md={isOpen ? 3 : 0} 
-      className={`bg-light border-end p-3 d-flex flex-column position-relative ${isOpen ? "d-block" : "d-none"}`}
+      md={isSidebarOpen ? 3 : 0} 
+      className={`bg-light border-end p-3 d-flex flex-column position-relative ${isSidebarOpen ? "d-block" : "d-none"}`}
       style={{ 
         minWidth: '300px', 
         height: 'calc(100vh - 56px)',
@@ -141,7 +143,7 @@ function Sidebar({
           <Button 
             variant="outline-secondary" 
             className="position-absolute top-0 end-0 m-2" 
-            onClick={() => setIsOpen(false)}
+            onClick={() => dispatch(setIsSidebarOpen(false))}
           >
             <FaAngleLeft />
           </Button>
@@ -242,7 +244,7 @@ function Sidebar({
           <Button 
             variant="outline-secondary" 
             className="position-absolute top-0 end-0 m-2" 
-            onClick={() => setIsOpen(false)}
+            onClick={() => dispatch(setIsSidebarOpen(false))}
           >
             <FaAngleLeft />
           </Button>
@@ -328,14 +330,8 @@ function Sidebar({
 Sidebar.propTypes = {
   groups: PropTypes.array.isRequired,
   chats: PropTypes.array.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   setGroups: PropTypes.func.isRequired,
   setChats: PropTypes.func.isRequired,
-  setIsOpen: PropTypes.func.isRequired,
-  setModalContent: PropTypes.func.isRequired,
-  setShowModal: PropTypes.func.isRequired,
-  showCreateClass: PropTypes.bool.isRequired,
-  setShowCreateClass: PropTypes.func.isRequired,
   selectedGroup: PropTypes.object,
   setSelectedGroup: PropTypes.func.isRequired,
   aiChatContext: PropTypes.object,

@@ -7,8 +7,16 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 
 import { Outlet, useLocation } from "react-router";
 
+import { useSelector, useDispatch } from "react-redux";
+import { setShowModal } from "../../stores/slices/uiStateSlice";
+
 function Home() {
   const location = useLocation();
+
+  const dispatch = useDispatch();
+
+  const modalContent = useSelector((state) => state.uiState.modalContent);
+  const showModal = useSelector((state) => state.uiState.showModal);
 
   // Group and Chat State
   const [groups, setGroups] = useState([
@@ -29,16 +37,6 @@ function Home() {
   ]);
   
   const [chats, setChats] = useState(["General Chat"]);
-  
-  // UI State
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState({ 
-    type: "", 
-    name: "", 
-    action: "" 
-  });
-  const [showCreateClass, setShowCreateClass] = useState(false);
   
   // AI Chat State
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -73,7 +71,7 @@ function Home() {
         setChats(chats.filter((c) => c !== name));
       }
     }
-    setShowModal(false);
+    dispatch(setShowModal(false));
   };
 
   return (
@@ -85,14 +83,8 @@ function Home() {
             <Sidebar
               groups={groups}
               chats={chats}
-              isOpen={isSidebarOpen}
               setGroups={setGroups}
               setChats={setChats}
-              setIsOpen={setIsSidebarOpen}
-              setModalContent={setModalContent}
-              setShowModal={setShowModal}
-              showCreateClass={showCreateClass}
-              setShowCreateClass={setShowCreateClass}
               selectedGroup={selectedGroup}
               setSelectedGroup={setSelectedGroup}
               aiChatContext={aiChatContext}
@@ -101,9 +93,7 @@ function Home() {
               setChatHistory={setChatHistory}
             />
             
-            <MainContent 
-              isSidebarOpen={isSidebarOpen}
-              setIsSidebarOpen={setIsSidebarOpen}
+            <MainContent
               selectedGroup={selectedGroup}
               aiChatContext={aiChatContext}
               setAIChatContext={setAIChatContext}
