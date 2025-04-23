@@ -66,8 +66,6 @@ function MainContent({
 }
 
 MainContent.propTypes = {
-  isSidebarOpen: PropTypes.bool.isRequired,
-  setIsSidebarOpen: PropTypes.func.isRequired,
   selectedGroup: PropTypes.object,
   setSelectedGroup: PropTypes.func.isRequired,
   groups: PropTypes.array.isRequired,

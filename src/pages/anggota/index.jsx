@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useState } from "react";
 
-import NavbarComponent from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
+import { useSelector, useDispatch } from "react-redux";
+import { setShowModal } from "../../stores/slices/uiStateSlice";
+
 function Anggota() {
-  let { kelasId, anggotaId } = useParams();
+  const dispatch = useDispatch();
+
+  const modalContent = useSelector((state) => state.uiState.modalContent);
+  const showModal = useSelector((state) => state.uiState.showModal);
   
   // Group and Chat State
   const [groups, setGroups] = useState([
@@ -21,16 +24,6 @@ function Anggota() {
   ]);
   
   const [chats, setChats] = useState(["General Chat"]);
-  
-  // UI State
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState({ 
-    type: "", 
-    name: "", 
-    action: "" 
-  });
-  const [showCreateClass, setShowCreateClass] = useState(false);
   
   // AI Chat State
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -65,7 +58,7 @@ function Anggota() {
         setChats(chats.filter((c) => c !== name));
       }
     }
-    setShowModal(false);
+    dispatch(setShowModal(false));
   };
 
   return (
@@ -73,14 +66,8 @@ function Anggota() {
       <Sidebar
         groups={groups}
         chats={chats}
-        isOpen={isSidebarOpen}
         setGroups={setGroups}
         setChats={setChats}
-        setIsOpen={setIsSidebarOpen}
-        setModalContent={setModalContent}
-        setShowModal={setShowModal}
-        showCreateClass={showCreateClass}
-        setShowCreateClass={setShowCreateClass}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
         aiChatContext={aiChatContext}
@@ -90,8 +77,6 @@ function Anggota() {
       />
       
       <MainContent 
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
         selectedGroup={selectedGroup}
         aiChatContext={aiChatContext}
         setAIChatContext={setAIChatContext}
