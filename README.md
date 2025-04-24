@@ -123,3 +123,9 @@ src
 1. Commit seawal dan secepatnya supaya tidak banyak perubahan yang menumpuk pada satu commit.
 2. Tolong buat branch sendiri pada repo lokal untuk mengembangkan fitur, kemudian rebase brnach tersebut ke master/main branch. Setelah itu silahkan di push ke remote repo.
 3. Jika sudah push ke remote repository, tolong kabari kolaborator yang lain.
+4. Untuk .env.development, dimohon untuk membuat sendiri dengan format
+
+```
+    VITE_API_BASE_URL=http://localhost:3000/api/v1 // bisa diganti dengan alamat lain
+    VITE_API_AUTH_KEY= (ini adalah authentication key)
+```
