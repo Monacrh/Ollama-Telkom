@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import NavbarComponent from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
@@ -9,6 +9,7 @@ import { Outlet, useLocation } from "react-router";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setShowModal } from "../../stores/slices/uiStateSlice";
+import { getUserAsync } from "../../stores/slices/userSlice";
 
 function Home() {
   const location = useLocation();
@@ -17,6 +18,11 @@ function Home() {
 
   const modalContent = useSelector((state) => state.uiState.modalContent);
   const showModal = useSelector((state) => state.uiState.showModal);
+
+  // Get user
+  useEffect(() => {
+    dispatch(getUserAsync());
+  }, [])
 
   // Group and Chat State
   const [groups, setGroups] = useState([
