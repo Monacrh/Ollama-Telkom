@@ -4,7 +4,7 @@ import { Button, Collapse, ListGroup, Dropdown } from 'react-bootstrap';
 import { FaUsers, FaEllipsisV } from 'react-icons/fa';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setModalContent, setShowModal } from '../../stores/slices/uiStateSlice';
+import { setModalContent, setShowModal, setIsGroupChatOpen } from '../../stores/slices/uiStateSlice';
 import { selectClassrooms } from '../../stores/slices/classroomSlice';
 
 function GroupsSection({
@@ -46,7 +46,7 @@ function GroupsSection({
                   <div 
                     className="flex-grow-1" 
                     style={{ cursor: 'pointer' }}
-                    // onClick={() => dispatch(setSelectedClassroom())}
+                    onClick={() => dispatch(setIsGroupChatOpen(true))}
                   >
                       <div>{classroom.className}</div>
                       <small className="text-muted">{classroom.classNickname}</small>

@@ -10,6 +10,7 @@ export const uiStateSlice = createSlice({
     name: 'uiState',
     initialState: {
         isSidebarOpen: true,
+        isGroupChatOpen: false,
         showCreateClass: false,
         showModal: false,
         modalContent: initialModalContent,
@@ -17,6 +18,9 @@ export const uiStateSlice = createSlice({
     reducers: {
         setIsSidebarOpen: (state, action) => {
             state.isSidebarOpen = action.payload;
+        },
+        setIsGroupChatOpen: (state, action) => {
+            state.isGroupChatOpen = action.payload;
         },
         setShowCreateClass: (state, action) => {
             state.showCreateClass = action.payload;
@@ -35,6 +39,7 @@ export const uiStateSlice = createSlice({
 
 export const {
     setIsSidebarOpen,
+    setIsGroupChatOpen,
     setShowCreateClass,
     setShowModal,
     setModalContent,

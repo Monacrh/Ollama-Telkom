@@ -1,12 +1,14 @@
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Button, InputGroup, Form, ListGroup } from 'react-bootstrap';
-import { FaArrowLeft, FaPaperPlane, FaPaperclip, FaMicrophone, FaPlay } from 'react-icons/fa';
+import { FaArrowLeft,FaPaperPlane, FaPaperclip, FaMicrophone, FaPlay } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setClassrooms, selectSelectedClassroom, selectClassrooms, clearClassroom } from '../../stores/slices/classroomSlice';
+import { setClassrooms, selectSelectedClassroom, selectClassrooms } from '../../stores/slices/classroomSlice';
+import { setIsGroupChatOpen } from '../../stores/slices/uiStateSlice';
 
-function GroupChat({setIsGroupChatOpen}) {
+function GroupChat() {
   const [newMessage, setNewMessage] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -69,13 +71,13 @@ function GroupChat({setIsGroupChatOpen}) {
     <div className="d-flex flex-column h-100">
       {/* Header */}
       <div className="d-flex align-items-center py-2 border-bottom bg-light">
-        <Button 
-          variant="link" 
-          onClick={() => setIsGroupChatOpen(false)}
+        <Link 
+          to="/"
+          onClick={() => dispatch(setIsGroupChatOpen(false))}
           className="me-2 text-dark"
         >
           <FaArrowLeft />
-        </Button>
+        </Link>
         <div className="flex-grow-1">
           <h5 className="mb-0">{selectedClassroom.className}</h5>
           <small className="text-muted">Online</small>
