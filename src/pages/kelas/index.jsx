@@ -90,12 +90,8 @@ function Kelas() {
               />
               
               <MainContent 
-                selectedGroup={selectedGroup}
                 aiChatContext={aiChatContext}
                 setAIChatContext={setAIChatContext}
-                chatHistory={chatHistory}
-                setChatHistory={setChatHistory}
-                setSelectedGroup={setSelectedGroup}
               />
             </>
             ) : (<Outlet />)
@@ -105,7 +101,7 @@ function Kelas() {
 
       <ConfirmationModal
         show={showModal}
-        onHide={() => setShowModal(false)}
+        onHide={() => dispatch(setShowModal(false))}
         content={modalContent}
         onConfirm={handleConfirmAction}
       />

@@ -25,26 +25,6 @@ function Home() {
     dispatch(getUserAsync());
     dispatch(getClassroomsAsync());
   }, [dispatch])
-
-  // Group and Chat State
-
-
-  // const [groups, setGroups] = useState([
-  //   { 
-  //     id: 1, 
-  //     name: "Sample Group", 
-  //     members: [{
-  //       id: '1',
-  //       name: "103012380499",
-  //       email: "coder01at@gmail.com"
-  //     },{
-  //       id: '2',
-  //       name: "103012380490",
-  //       email: "coder02at@gmail.com"
-  //     }],
-  //     messages: []
-  //   },
-  // ]);
   
   const [chats, setChats] = useState(["General Chat"]);
   
@@ -93,8 +73,6 @@ function Home() {
             <Sidebar
               chats={chats}
               setChats={setChats}
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
               aiChatContext={aiChatContext}
               setAIChatContext={setAIChatContext}
               chatHistory={chatHistory}
@@ -102,12 +80,8 @@ function Home() {
             />
             
             <MainContent
-              selectedGroup={selectedGroup}
               aiChatContext={aiChatContext}
               setAIChatContext={setAIChatContext}
-              chatHistory={chatHistory}
-              setChatHistory={setChatHistory}
-              setSelectedGroup={setSelectedGroup}
             />
           </Row>
         </Container>
@@ -116,7 +90,7 @@ function Home() {
 
       <ConfirmationModal
         show={showModal}
-        onHide={() => setShowModal(false)}
+        onHide={() => dispatch(setShowModal(false))}
         content={modalContent}
         onConfirm={handleConfirmAction}
       />

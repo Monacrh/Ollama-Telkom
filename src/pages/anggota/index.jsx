@@ -13,16 +13,6 @@ function Anggota() {
   const modalContent = useSelector((state) => state.uiState.modalContent);
   const showModal = useSelector((state) => state.uiState.showModal);
   
-  // Group and Chat State
-  // const [groups, setGroups] = useState([
-  //   { 
-  //     id: 1, 
-  //     name: "Sample Group", 
-  //     members: ["student1@telkom.com", "student2@telkom.com"],
-  //     messages: []
-  //   }
-  // ]);
-  
   const [chats, setChats] = useState(["General Chat"]);
   
   // AI Chat State
@@ -66,8 +56,6 @@ function Anggota() {
       <Sidebar
         chats={chats}
         setChats={setChats}
-        selectedGroup={selectedGroup}
-        setSelectedGroup={setSelectedGroup}
         aiChatContext={aiChatContext}
         setAIChatContext={setAIChatContext}
         chatHistory={chatHistory}
@@ -75,16 +63,13 @@ function Anggota() {
       />
       
       <MainContent 
-        selectedGroup={selectedGroup}
         aiChatContext={aiChatContext}
         setAIChatContext={setAIChatContext}
-        chatHistory={chatHistory}
-        setChatHistory={setChatHistory}
       />
 
       <ConfirmationModal
         show={showModal}
-        onHide={() => setShowModal(false)}
+        onHide={() => dispatch(setShowModal(false))}
         content={modalContent}
         onConfirm={handleConfirmAction}
       />
