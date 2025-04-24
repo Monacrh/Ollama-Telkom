@@ -8,7 +8,7 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setShowModal } from "../../stores/slices/uiStateSlice";
-import { setSelectedClassroom, setClassrooms, selectClassrooms, getClassroomAsync, getClassroomsAsync } from "../../stores/slices/classroomSlice";
+import { setClassrooms, selectClassrooms, getClassroomAsync, getClassroomsAsync } from "../../stores/slices/classroomSlice";
 
 function Kelas() {
   let { kelasId } = useParams();
@@ -23,7 +23,6 @@ function Kelas() {
   const [chats, setChats] = useState(["General Chat"]);
   
   // AI Chat State
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [aiChatContext, setAIChatContext] = useState(null);
   const [chatHistory, setChatHistory] = useState([
     {
@@ -49,8 +48,7 @@ function Kelas() {
     const { name, type, action } = modalContent;
     if (action === "delete") {
       if (type === "Group") {
-        setClassrooms(classrooms.filter((c) => c.classID !== name));
-        dispatch(setSelectedClassroom(null));
+        dispatch(setClassrooms(classrooms.filter((c) => c.classID !== name)));
       } else {
         setChats(chats.filter((c) => c !== name));
       }

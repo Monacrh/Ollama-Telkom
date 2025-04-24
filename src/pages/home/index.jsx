@@ -10,7 +10,7 @@ import { Outlet, useLocation } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { setShowModal } from "../../stores/slices/uiStateSlice";
 import { getUserAsync } from "../../stores/slices/userSlice";
-import { getClassroomsAsync } from "../../stores/slices/classroomSlice";
+import { getClassroomsAsync, setClassrooms, selectClassrooms } from "../../stores/slices/classroomSlice";
 
 function Home() {
   const location = useLocation();
@@ -19,6 +19,7 @@ function Home() {
 
   const modalContent = useSelector((state) => state.uiState.modalContent);
   const showModal = useSelector((state) => state.uiState.showModal);
+  const classrooms = useSelector(selectClassrooms);
 
   // Get user
   useEffect(() => {
@@ -29,7 +30,6 @@ function Home() {
   const [chats, setChats] = useState(["General Chat"]);
   
   // AI Chat State
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [aiChatContext, setAIChatContext] = useState(null);
   const [chatHistory, setChatHistory] = useState([
     {
@@ -55,8 +55,7 @@ function Home() {
     const { name, type, action } = modalContent;
     if (action === "delete") {
       if (type === "Group") {
-        // setGroups(groups.filter((g) => g.id !== name));
-        setSelectedGroup(null);
+        dispatch(setClassrooms(classrooms.filter((c) => c.classID !== name)));
       } else {
         setChats(chats.filter((c) => c !== name));
       }
