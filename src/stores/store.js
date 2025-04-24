@@ -1,12 +1,15 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
 import uiStateReducer from './slices/uiStateSlice';
 import userReducer from './slices/userSlice';
+import classroomReducer from './slices/classroomSlice';
 
 const rootReducer = combineReducers({
   uiState: uiStateReducer,
   user: userReducer,
+  classroom: classroomReducer,
 });
 
 const persistConfig = {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
 import { useLocation, useParams, Link, useNavigate } from 'react-router';
@@ -11,30 +11,8 @@ import { BsSearch } from "react-icons/bs";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsSidebarOpen, setModalContent, setShowCreateClass, setShowModal } from '../../stores/slices/uiStateSlice';
-
-const dummyUser = {
-  role: 'teacher',
-  name: 'John Doe',
-  email: "johndoe@gmail.com",
-  id: 'teacher1'
-}
-
-const dummyKelas = {
-  id: 1,
-  name: "Kelas IFX-47-01",
-  members: [
-    {
-      id: '1',
-      name: "103012380496",
-      email: "coder11at@gmail.com"
-    },
-    {
-      id: '2',
-      name: "103012380497",
-      email: "coder12at@gmail.com"
-    }
-  ],
-};
+import { selectSelectedClassroom } from '../../stores/slices/classroomSlice';
+import { selectUser } from '../../stores/slices/userSlice';
 
 const dummyChat = {
   user_id: 1,
@@ -63,12 +41,8 @@ const dummyChat = {
 };
 
 function Sidebar({
-  groups,
   chats,
-  setGroups,
   setChats,
-  // selectedGroup,
-  setSelectedGroup,
   aiChatContext,
   setAIChatContext,
   chatHistory,
@@ -82,6 +56,8 @@ function Sidebar({
 
   const isSidebarOpen = useSelector((state) => state.uiState.isSidebarOpen);
   const showCreateClass = useSelector((state) => state.uiState.showCreateClass);
+  const selectedClassroom = useSelector(selectSelectedClassroom);
+  const user = useSelector(selectUser);
   
   const [groupDropdownOpen, setGroupDropdownOpen] = useState(true);
   const [chatDropdownOpen, setChatDropdownOpen] = useState(true);
@@ -100,9 +76,9 @@ function Sidebar({
     )
   );
 
-  const filteredMembers = dummyKelas.members.filter(member =>
-    member.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-    member.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
+  const filteredMembers = selectedClassroom.listOfStudent.filter(student =>
+    student.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+    student.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
   );
 
   const handleNewAIChat = () => {
@@ -116,17 +92,10 @@ function Sidebar({
     setChatHistory([newChat, ...chatHistory]);
     setAIChatContext({
       activeChat: newChat,
-      user: dummyUser
+      user
     });
-    navigate(`/k/${dummyKelas.id}/a/ai`);
+    navigate(`/k/${selectedClassroom.classID}/a/ai`);
   };
-
-  useEffect(() => {
-    if (kelasId) {
-      const selected = groups.find((group) => group.id === parseInt(kelasId));
-      setSelectedGroup(selected || null);
-    }
-  }, [kelasId, groups, setSelectedGroup]);
 
   return (
     <Col 
@@ -150,20 +119,16 @@ function Sidebar({
 
           {showCreateClass ? (
             <CreateClassForm
-              setGroups={setGroups}
+              // setGroups={setGroups}
               setShowCreateClass={setShowCreateClass}
             />
           ) : (
             <>
               <GroupsSection
-                groups={groups}
                 groupDropdownOpen={groupDropdownOpen}
                 setGroupDropdownOpen={setGroupDropdownOpen}
                 activeMenuId={activeMenuId}
                 toggleMenu={toggleMenu}
-                setModalContent={setModalContent}
-                setShowModal={setShowModal}
-                setSelectedGroup={setSelectedGroup}
               />
 
               <ChatsSection
@@ -196,7 +161,10 @@ function Sidebar({
               >
                 <FaAngleLeft />
               </Link>
-              <h5 className="mb-0">{dummyKelas.name}</h5>
+              <div>
+                <h5 className="mb-0">{selectedClassroom.className}</h5>
+                <p className='mb-0'>{selectedClassroom.classNickname}</p>
+              </div>
             </div>
 
             <div className="border-top pt-3">
@@ -263,10 +231,10 @@ function Sidebar({
               </Link>
               <div>
                 <div className="fw-bold">
-                  {pathname.includes('ai') ? dummyUser.name : dummyChat.name}
+                  {pathname.includes('ai') ? user.name : dummyChat.name}
                 </div>
                 <small className="text-muted">
-                  {pathname.includes('ai') ? dummyUser.email : dummyChat.email}
+                  {pathname.includes('ai') ? user.email : dummyChat.email}
                 </small>
               </div>
             </div>
@@ -310,7 +278,7 @@ function Sidebar({
             </ListGroup>
           </div>
 
-          {dummyUser.role === 'student' && (
+          {user.role === 'student' && (
             <Button 
               variant="primary" 
               className="position-absolute bottom-0 end-0 m-3 rounded-circle"

@@ -1,14 +1,21 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Button, InputGroup, Form, ListGroup, Container, Row, Col } from 'react-bootstrap';
+import { Button, InputGroup, Form, ListGroup } from 'react-bootstrap';
 import { FaArrowLeft, FaPaperPlane, FaPaperclip, FaMicrophone, FaPlay } from 'react-icons/fa';
 
-function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
+import { useSelector, useDispatch } from 'react-redux';
+import { setClassrooms, selectSelectedClassroom, selectClassrooms, clearClassroom } from '../../stores/slices/classroomSlice';
+
+function GroupChat({setIsGroupChatOpen}) {
   const [newMessage, setNewMessage] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const fileInputRef = useRef(null);
-  const recorderRef = useRef(null);
+  // const recorderRef = useRef(null);
+  
+  const dispatch = useDispatch();
+  const classrooms = useSelector(selectClassrooms);
+  const selectedClassroom = useSelector(selectSelectedClassroom);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -20,17 +27,17 @@ function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
         file: filePreview
       };
 
-      const updatedGroups = groups.map(g => {
-        if (g.id === group.id) {
+      const updatedGroups = classrooms.map(c => {
+        if (c.classID === selectedClassroom.classID) {
           return {
-            ...g,
-            messages: [...g.messages, messageContent]
+            ...c,
+            messages: [...c.messages, messageContent]
           };
         }
-        return g;
+        return c;
       });
       
-      setGroups(updatedGroups);
+      dispatch(setClassrooms(updatedGroups));
       setNewMessage('');
       setFilePreview(null);
     }
@@ -64,13 +71,13 @@ function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
       <div className="d-flex align-items-center py-2 border-bottom bg-light">
         <Button 
           variant="link" 
-          onClick={() => setSelectedGroup(null)}
+          onClick={() => setIsGroupChatOpen(false)}
           className="me-2 text-dark"
         >
           <FaArrowLeft />
         </Button>
         <div className="flex-grow-1">
-          <h5 className="mb-0">{group.name}</h5>
+          <h5 className="mb-0">{selectedClassroom.className}</h5>
           <small className="text-muted">Online</small>
         </div>
       </div>
@@ -78,7 +85,7 @@ function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
       {/* Chat Messages */}
       <div className="flex-grow-1 overflow-auto p-3 bg-chat">
         <ListGroup variant="flush">
-          {group.messages.map((message, index) => (
+          {/* {selectedClassroom.messages.map((message, index) => (
             <ListGroup.Item 
               key={index}
               className="border-0 bg-transparent p-1"
@@ -123,7 +130,7 @@ function GroupChat({ group, setSelectedGroup, groups, setGroups }) {
                 </div>
               </div>
             </ListGroup.Item>
-          ))}
+          ))} */}
         </ListGroup>
       </div>
 

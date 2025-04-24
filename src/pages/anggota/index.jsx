@@ -14,14 +14,14 @@ function Anggota() {
   const showModal = useSelector((state) => state.uiState.showModal);
   
   // Group and Chat State
-  const [groups, setGroups] = useState([
-    { 
-      id: 1, 
-      name: "Sample Group", 
-      members: ["student1@telkom.com", "student2@telkom.com"],
-      messages: []
-    }
-  ]);
+  // const [groups, setGroups] = useState([
+  //   { 
+  //     id: 1, 
+  //     name: "Sample Group", 
+  //     members: ["student1@telkom.com", "student2@telkom.com"],
+  //     messages: []
+  //   }
+  // ]);
   
   const [chats, setChats] = useState(["General Chat"]);
   
@@ -52,7 +52,7 @@ function Anggota() {
     const { name, type, action } = modalContent;
     if (action === "delete") {
       if (type === "Group") {
-        setGroups(groups.filter((g) => g.id !== name));
+        // setGroups(groups.filter((g) => g.id !== name));
         setSelectedGroup(null);
       } else {
         setChats(chats.filter((c) => c !== name));
@@ -64,9 +64,7 @@ function Anggota() {
   return (
     <>
       <Sidebar
-        groups={groups}
         chats={chats}
-        setGroups={setGroups}
         setChats={setChats}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
@@ -80,8 +78,6 @@ function Anggota() {
         selectedGroup={selectedGroup}
         aiChatContext={aiChatContext}
         setAIChatContext={setAIChatContext}
-        groups={groups}
-        setGroups={setGroups}
         chatHistory={chatHistory}
         setChatHistory={setChatHistory}
       />

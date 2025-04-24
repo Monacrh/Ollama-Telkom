@@ -1,22 +1,24 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Button, Collapse, ListGroup, Dropdown } from 'react-bootstrap';
 import { FaUsers, FaEllipsisV } from 'react-icons/fa';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setModalContent, setShowModal } from '../../stores/slices/uiStateSlice';
+import { selectClassrooms } from '../../stores/slices/classroomSlice';
+
 function GroupsSection({
-  groups,
   groupDropdownOpen,
   setGroupDropdownOpen,
   activeMenuId,
   toggleMenu,
-  setModalContent,
-  setShowModal,
-  setSelectedGroup
 }) {
+  const dispatch = useDispatch();
+  const classrooms = useSelector(selectClassrooms)
+
   const handleAction = (action, id) => {
-    setModalContent({ name: id, type: "Group", action });
-    setShowModal(true);
+    dispatch(setModalContent({ name: id, type: "Group", action }));
+    dispatch(setShowModal(true));
   };
 
   return (
@@ -31,31 +33,31 @@ function GroupsSection({
       <Collapse in={groupDropdownOpen}>
         <div style={{}}>
           <ListGroup>
-            {groups.map((group) => (
+            {classrooms.map((classroom) => (
               <ListGroup.Item 
-                key={group.id} 
+                key={classroom.classID} 
                 className="d-flex justify-content-between align-items-center"
               >
                 {/* Group info with separate click handler */}
                 <Link 
-                  to={`/k/${group.id}`}
+                  to={`/k/${classroom.classID}`}
                   className="text-decoration-none text-reset"
                 >
                   <div 
                     className="flex-grow-1" 
                     style={{ cursor: 'pointer' }}
-                    onClick={() => setSelectedGroup(group)}
+                    // onClick={() => dispatch(setSelectedClassroom())}
                   >
-                      <div>{group.name}</div>
-                      <small className="text-muted">{group.members.length} members</small>
+                      <div>{classroom.className}</div>
+                      <small className="text-muted">{classroom.classNickname}</small>
                   </div>
                 </Link>
 
                 {/* Dropdown with click prevention */}
                 <Dropdown 
-                  show={activeMenuId === group.id} 
+                  show={activeMenuId === classroom.classID} 
                   onToggle={(isOpen) => {
-                    toggleMenu(isOpen ? group.id : null);
+                    toggleMenu(isOpen ? classroom.classID : null);
                   }}
                   align="end"
                 >
@@ -66,7 +68,7 @@ function GroupsSection({
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleMenu(group.id);
+                      toggleMenu(classroom.classID);
                     }}
                   >
                     <FaEllipsisV />
@@ -75,7 +77,7 @@ function GroupsSection({
                     <Dropdown.Item 
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleAction("manage", group.id);
+                        handleAction("manage", classroom.classID);
                       }}
                     >
                       Kelola
@@ -83,7 +85,7 @@ function GroupsSection({
                     <Dropdown.Item 
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleAction("delete", group.id);
+                        handleAction("delete", classroom.classID);
                       }}
                       className="text-danger"
                     >

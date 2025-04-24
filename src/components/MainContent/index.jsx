@@ -6,17 +6,17 @@ import AIChat from './AIChat';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsSidebarOpen } from '../../stores/slices/uiStateSlice';
+import { selectSelectedClassroom } from '../../stores/slices/classroomSlice';
+import { useState } from 'react';
 
 function MainContent({
-  setSelectedGroup,
-  selectedGroup,
   aiChatContext,
   setAIChatContext,
-  groups,
-  setGroups,
 }) {
   const dispatch = useDispatch();
   const isSidebarOpen = useSelector((state) => state.uiState.isSidebarOpen);
+  const selectedClassroom = useSelector(selectSelectedClassroom);
+  const [isGroupChatOpen, setIsGroupChatOpen] = useState(false);
 
   return (
     <Col 
@@ -44,13 +44,8 @@ function MainContent({
           // chatHistory={chatHistory}
           // setChatHistory={setChatHistory}
         />
-      ) : selectedGroup ? (
-        <GroupChat 
-          group={selectedGroup}
-          groups={groups}
-          setGroups={setGroups}
-          setSelectedGroup={setSelectedGroup}
-        />
+      ) : isGroupChatOpen ? (
+        <GroupChat setIsGroupChatOpen={setIsGroupChatOpen}/>
       ) : (
         <div className="text-center w-100">
           <img 

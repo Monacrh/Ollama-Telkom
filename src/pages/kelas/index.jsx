@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row } from "react-bootstrap";
 import { useParams, Outlet, useLocation } from "react-router";
 
@@ -8,6 +8,7 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setShowModal } from "../../stores/slices/uiStateSlice";
+import { setSelectedClassroom, setClassrooms, selectClassrooms, getClassroomAsync, getClassroomsAsync } from "../../stores/slices/classroomSlice";
 
 function Kelas() {
   let { kelasId } = useParams();
@@ -17,16 +18,7 @@ function Kelas() {
 
   const modalContent = useSelector((state) => state.uiState.modalContent);
   const showModal = useSelector((state) => state.uiState.showModal);
-  
-  // Group and Chat State
-  const [groups, setGroups] = useState([
-    { 
-      id: 1, 
-      name: "Sample Group", 
-      members: ["student1@telkom.com", "student2@telkom.com"],
-      messages: []
-    }
-  ]);
+  const classrooms = useSelector(selectClassrooms);
   
   const [chats, setChats] = useState(["General Chat"]);
   
@@ -57,14 +49,30 @@ function Kelas() {
     const { name, type, action } = modalContent;
     if (action === "delete") {
       if (type === "Group") {
-        setGroups(groups.filter((g) => g.id !== name));
-        setSelectedGroup(null);
+        setClassrooms(classrooms.filter((c) => c.classID !== name));
+        dispatch(setSelectedClassroom(null));
       } else {
         setChats(chats.filter((c) => c !== name));
       }
     }
     dispatch(setShowModal(false));
   };
+
+  useEffect(() => {
+    if (classrooms.length === 0) {
+      dispatch(getClassroomsAsync());
+      return;
+    }
+
+    if (kelasId) {
+      try {
+        const selected = classrooms.find((classroom) => classroom.classID === kelasId);
+        dispatch(getClassroomAsync(selected.classID));
+      } catch (error) {
+        console.log("Error fetching classroom data: ", error);
+      }
+    }
+  }, [kelasId, dispatch, classrooms]);
 
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>      
@@ -73,12 +81,8 @@ function Kelas() {
           { pathname === `/k/${kelasId}` ? (
             <>
               <Sidebar
-                groups={groups}
                 chats={chats}
-                setGroups={setGroups}
                 setChats={setChats}
-                selectedGroup={selectedGroup}
-                setSelectedGroup={setSelectedGroup}
                 aiChatContext={aiChatContext}
                 setAIChatContext={setAIChatContext}
                 chatHistory={chatHistory}
@@ -89,8 +93,6 @@ function Kelas() {
                 selectedGroup={selectedGroup}
                 aiChatContext={aiChatContext}
                 setAIChatContext={setAIChatContext}
-                groups={groups}
-                setGroups={setGroups}
                 chatHistory={chatHistory}
                 setChatHistory={setChatHistory}
                 setSelectedGroup={setSelectedGroup}
