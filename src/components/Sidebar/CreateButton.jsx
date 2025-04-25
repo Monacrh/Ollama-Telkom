@@ -1,33 +1,83 @@
-import React from 'react';
+// CreateButton.jsx
 import PropTypes from 'prop-types';
-import { Dropdown, Button } from 'react-bootstrap';
+import { Dropdown, Modal, Button, Form } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { createChat, fetchChats } from '../../stores/slices/chatSlice';
 
-function CreateButton({ setChats, setShowCreateClass }) {
+function CreateButton({ setShowCreateClass }) {
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [chatTitle, setChatTitle] = useState('');
+  const dispatch = useDispatch();
+
+  const handleCreateChat = async () => {
+    try {
+      const resultAction = await dispatch(createChat(chatTitle));
+      const newChat = resultAction.payload;
+      
+      if (newChat && newChat.length > 0) {
+        // Optional: Force refresh the list
+        await dispatch(fetchChats());
+      }
+      
+      setShowChatModal(false);
+      setChatTitle('');
+    } catch (error) {
+      console.error('Failed to create chat:', error);
+    }
+  };
+
   return (
-    <Dropdown className="position-absolute bottom-0 end-0 m-3">
-      <Dropdown.Toggle
-        variant="primary"
-        className="rounded-0 p-3 d-flex align-items-center justify-content-center"
-        bsPrefix="custom-dropdown-toggle"
-        style={{ width: "60px", height: "60px" }}
-      >
-        <FaPlus />
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => setShowCreateClass(true)}>
-          Buat Kelas
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setChats(prev => [...prev, `Chat ${prev.length + 1}`])}>
-          Buat Chat
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
+    <>
+      <Dropdown className="position-absolute bottom-0 end-0 m-3">
+        <Dropdown.Toggle
+          variant="primary"
+          className="rounded-0 p-3 d-flex align-items-center justify-content-center"
+          bsPrefix="custom-dropdown-toggle"
+          style={{ width: "60px", height: "60px" }}
+        >
+          <FaPlus />
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setShowCreateClass(true)}>
+            Create Class
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setShowChatModal(true)}>
+            Create Chat
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+
+      <Modal show={showChatModal} onHide={() => setShowChatModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>New Chat</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="chatTitle">
+            <Form.Label>Chat Title</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter chat title"
+              value={chatTitle}
+              onChange={(e) => setChatTitle(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowChatModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleCreateChat} disabled={!chatTitle.trim()}>
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 
 CreateButton.propTypes = {
-  setChats: PropTypes.func.isRequired,
   setShowCreateClass: PropTypes.func.isRequired
 };
 

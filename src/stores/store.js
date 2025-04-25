@@ -5,11 +5,13 @@ import storage from 'redux-persist/lib/storage';
 import uiStateReducer from './slices/uiStateSlice';
 import userReducer from './slices/userSlice';
 import classroomReducer from './slices/classroomSlice';
+import chatReducer from './slices/chatSlice';
 
 const rootReducer = combineReducers({
   uiState: uiStateReducer,
   user: userReducer,
   classroom: classroomReducer,
+  chat: chatReducer,
 });
 
 const persistConfig = {
