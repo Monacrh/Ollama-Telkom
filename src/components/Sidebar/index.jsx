@@ -5,12 +5,12 @@ import { useLocation, useParams, Link, useNavigate } from 'react-router';
 import GroupsSection from './GroupSection';
 import ChatsSection from './ChatSection';
 import CreateButton from './CreateButton';
-import CreateClassForm from './CreateKelas';
+// import CreateClassForm from './CreateKelas';
 import { FaAngleLeft, FaRobot, FaSearch } from 'react-icons/fa';
 import { BsSearch } from "react-icons/bs";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsSidebarOpen, setModalContent, setShowCreateClass, setShowModal } from '../../stores/slices/uiStateSlice';
+import { setIsSidebarOpen, setModalContent, setShowModal } from '../../stores/slices/uiStateSlice';
 import { selectSelectedClassroom } from '../../stores/slices/classroomSlice';
 import { selectUser } from '../../stores/slices/userSlice';
 
@@ -42,7 +42,6 @@ const dummyChat = {
 
 function Sidebar({
   chats,
-  setChats,
   aiChatContext,
   setAIChatContext,
   chatHistory,
@@ -55,7 +54,6 @@ function Sidebar({
   const dispatch = useDispatch();
 
   const isSidebarOpen = useSelector((state) => state.uiState.isSidebarOpen);
-  const showCreateClass = useSelector((state) => state.uiState.showCreateClass);
   const selectedClassroom = useSelector(selectSelectedClassroom);
   const user = useSelector(selectUser);
   
@@ -117,7 +115,7 @@ function Sidebar({
             <FaAngleLeft />
           </Button>
 
-          {showCreateClass ? (
+          {/* {showCreateClass ? (
             <CreateClassForm
               // setGroups={setGroups}
               setShowCreateClass={setShowCreateClass}
@@ -141,12 +139,30 @@ function Sidebar({
                 setShowModal={setShowModal}
               />
 
-              <CreateButton 
-                setChats={setChats}
-                setShowCreateClass={setShowCreateClass}
-              />
+              <CreateButton />
             </>
-          )}
+          )} */}
+
+          <>
+            <GroupsSection
+              groupDropdownOpen={groupDropdownOpen}
+              setGroupDropdownOpen={setGroupDropdownOpen}
+              activeMenuId={activeMenuId}
+              toggleMenu={toggleMenu}
+            />
+
+            <ChatsSection
+              chats={chats}
+              chatDropdownOpen={chatDropdownOpen}
+              setChatDropdownOpen={setChatDropdownOpen}
+              activeMenuId={activeMenuId}
+              toggleMenu={toggleMenu}
+              setModalContent={setModalContent}
+              setShowModal={setShowModal}
+            />
+
+            <CreateButton />
+          </>
         </>
       )}
 

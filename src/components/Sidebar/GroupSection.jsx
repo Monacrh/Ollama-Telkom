@@ -14,7 +14,7 @@ function GroupsSection({
   toggleMenu,
 }) {
   const dispatch = useDispatch();
-  const classrooms = useSelector(selectClassrooms)
+  const classrooms = useSelector(selectClassrooms);
 
   const handleAction = (action, id) => {
     dispatch(setModalContent({ name: id, type: "Group", action }));

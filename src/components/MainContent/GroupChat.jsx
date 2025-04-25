@@ -7,6 +7,7 @@ import { Link } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { setClassrooms, selectSelectedClassroom, selectClassrooms } from '../../stores/slices/classroomSlice';
 import { setIsGroupChatOpen } from '../../stores/slices/uiStateSlice';
+import { fetchChats } from '../../stores/slices/chatSlice';
 
 function GroupChat() {
   const [newMessage, setNewMessage] = useState('');
@@ -18,6 +19,7 @@ function GroupChat() {
   const dispatch = useDispatch();
   const classrooms = useSelector(selectClassrooms);
   const selectedClassroom = useSelector(selectSelectedClassroom);
+  const { chats, loading, error } = useSelector((state) => state.chat);
 
   const handleSendMessage = (e) => {
     e.preventDefault();

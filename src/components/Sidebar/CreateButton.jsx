@@ -2,14 +2,23 @@
 import PropTypes from 'prop-types';
 import { Dropdown, Modal, Button, Form } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { createChat, fetchChats } from '../../stores/slices/chatSlice';
+import { createClassroomAsync, getClassroomsAsync } from '../../stores/slices/classroomSlice';
+import { setShowCreateClass } from '../../stores/slices/uiStateSlice';
 
-function CreateButton({ setShowCreateClass }) {
+function CreateButton() {
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatTitle, setChatTitle] = useState('');
+
+  const [classroomName, setClassroomName] = useState('');
+  const [classroomNickname, setClassroomNickname] = useState('');
+  const [classroomDesc, setClassroomDesc] = useState('');
+
   const dispatch = useDispatch();
+
+  const showCreateClass = useSelector((state) => state.uiState.showCreateClass);
 
   const handleCreateChat = async () => {
     try {
@@ -28,6 +37,26 @@ function CreateButton({ setShowCreateClass }) {
     }
   };
 
+  const handleCreateClassroom = async () => {
+    let newClassroom = {
+      className: classroomName,
+      classNickname: classroomNickname,
+      classDescription: classroomDesc
+    }
+    try {
+      dispatch(createClassroomAsync(newClassroom));
+      
+      dispatch(getClassroomsAsync());
+      
+      setShowCreateClass(false);
+      setClassroomName('');
+      setClassroomNickname('');
+      setClassroomDesc('');
+    } catch (error) {
+      console.error('Failed to create classroom:', error);
+    }
+  };
+
   return (
     <>
       <Dropdown className="position-absolute bottom-0 end-0 m-3">
@@ -40,7 +69,7 @@ function CreateButton({ setShowCreateClass }) {
           <FaPlus />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item onClick={() => setShowCreateClass(true)}>
+          <Dropdown.Item onClick={() => dispatch(setShowCreateClass(true))}>
             Create Class
           </Dropdown.Item>
           <Dropdown.Item onClick={() => setShowChatModal(true)}>
@@ -69,6 +98,49 @@ function CreateButton({ setShowCreateClass }) {
             Cancel
           </Button>
           <Button variant="primary" onClick={handleCreateChat} disabled={!chatTitle.trim()}>
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showCreateClass} onHide={() => dispatch(setShowCreateClass(false))} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>New Classroom</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="classroomName">
+            <Form.Label>Classroom Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter classroom name"
+              value={classroomName}
+              onChange={(e) => setClassroomName(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="classroomNickname">
+            <Form.Label>Classroom Nickname</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter classroom nickname"
+              value={classroomNickname}
+              onChange={(e) => setClassroomNickname(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="classroomDesc">
+            <Form.Label>Classroom Description</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter classroom description"
+              value={classroomDesc}
+              onChange={(e) => setClassroomDesc(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => dispatch(setShowCreateClass(false))}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleCreateClassroom} disabled={!classroomName.trim() || !classroomNickname.trim() || !classroomDesc.trim()}>
             Create
           </Button>
         </Modal.Footer>

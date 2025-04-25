@@ -58,6 +58,18 @@ export const sendChatMessage = createAsyncThunk(
   }
 );
 
+export const fetchSelectedChats = createAsyncThunk(
+  'chat/fetchSelected',
+  async (chatID, { rejectWithValue }) => {
+    try {
+      const response = await chatAPI.getSelectedChats(chatID);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch chats');
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -94,6 +106,20 @@ const chatSlice = createSlice({
         state.chats = action.payload;
       })
       .addCase(fetchChats.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Fetch Selected Chats
+      .addCase(fetchSelectedChats.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSelectedChats.fulfilled, (state, action) => {
+        state.loading = false;
+        state.chats = action.payload;
+      })
+      .addCase(fetchSelectedChats.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

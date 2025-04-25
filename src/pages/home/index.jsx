@@ -71,7 +71,6 @@ function Home() {
           <Row className="h-100" style={{ minHeight: "calc(100vh - 56px)" }}>
             <Sidebar
               chats={chats}
-              setChats={setChats}
               aiChatContext={aiChatContext}
               setAIChatContext={setAIChatContext}
               chatHistory={chatHistory}

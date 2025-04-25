@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchClassrooms, fetchClassroom } from '../../api/classroomsApi';
+import { fetchClassrooms, fetchClassroom, createClassroom } from '../../api/classroomsApi';
 
 const initialClassrooms = [
   {
@@ -89,6 +89,17 @@ export const classroomSlice = createSlice({
         state.status = 'failed';
         state.selectedClassroom = initialClassroom;
         state.error = 'Failed to fetch classroom data';
+      })
+      .addCase(createClassroomAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createClassroomAsync.fulfilled, (state) => {
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(createClassroomAsync.rejected, (state) => {
+        state.status = 'failed';
+        state.error = 'Failed to fetch classroom data';
       });
   },
 });
@@ -111,3 +122,8 @@ export const getClassroomAsync = createAsyncThunk('classroom/getClassroom', asyn
   const response = await fetchClassroom(classID);
   return response.data;
 });
+
+export const createClassroomAsync = createAsyncThunk('classroom/createClassroom', async (classroomData) => {
+  const response = await createClassroom(classroomData);
+  return response;
+})

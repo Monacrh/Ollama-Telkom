@@ -8,7 +8,8 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setShowModal } from "../../stores/slices/uiStateSlice";
-import { setClassrooms, selectClassrooms, getClassroomAsync, getClassroomsAsync } from "../../stores/slices/classroomSlice";
+import { setClassrooms, selectClassrooms, getClassroomAsync, getClassroomsAsync, selectSelectedClassroom } from "../../stores/slices/classroomSlice";
+import { fetchSelectedChats } from '../../stores/slices/chatSlice';
 
 function Kelas() {
   let { kelasId } = useParams();
@@ -19,8 +20,11 @@ function Kelas() {
   const modalContent = useSelector((state) => state.uiState.modalContent);
   const showModal = useSelector((state) => state.uiState.showModal);
   const classrooms = useSelector(selectClassrooms);
+  const classroom = useSelector(selectSelectedClassroom);
+
+  const { chats, currentChatItems, loading, error } = useSelector((state) => state.chat);
   
-  const [chats, setChats] = useState(["General Chat"]);
+  // const [chats, setChats] = useState(["General Chat"]);
   
   // AI Chat State
   const [aiChatContext, setAIChatContext] = useState(null);
@@ -44,17 +48,17 @@ function Kelas() {
     }
   ]);
 
-  const handleConfirmAction = () => {
-    const { name, type, action } = modalContent;
-    if (action === "delete") {
-      if (type === "Group") {
-        dispatch(setClassrooms(classrooms.filter((c) => c.classID !== name)));
-      } else {
-        setChats(chats.filter((c) => c !== name));
-      }
-    }
-    dispatch(setShowModal(false));
-  };
+  // const handleConfirmAction = () => {
+  //   const { name, type, action } = modalContent;
+  //   if (action === "delete") {
+  //     if (type === "Group") {
+  //       dispatch(setClassrooms(classrooms.filter((c) => c.classID !== name)));
+  //     } else {
+  //       setChats(chats.filter((c) => c !== name));
+  //     }
+  //   }
+  //   dispatch(setShowModal(false));
+  // };
 
   useEffect(() => {
     if (classrooms.length === 0) {
@@ -72,6 +76,11 @@ function Kelas() {
     }
   }, [kelasId, dispatch, classrooms]);
 
+  useEffect(() => {
+    dispatch(fetchSelectedChats(classroom.chat.chatID));
+    console.log(chats);
+  }, [dispatch, classroom]);
+
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>      
       <Container fluid className="flex-grow-1">
@@ -79,8 +88,6 @@ function Kelas() {
           { pathname === `/k/${kelasId}` ? (
             <>
               <Sidebar
-                chats={chats}
-                setChats={setChats}
                 aiChatContext={aiChatContext}
                 setAIChatContext={setAIChatContext}
                 chatHistory={chatHistory}
@@ -101,7 +108,7 @@ function Kelas() {
         show={showModal}
         onHide={() => dispatch(setShowModal(false))}
         content={modalContent}
-        onConfirm={handleConfirmAction}
+        // onConfirm={handleConfirmAction}
       />
     </div>
   );

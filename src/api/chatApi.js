@@ -20,11 +20,16 @@ export const chatAPI = {
   //   const response = await apiClient.post(`/chat/session/${chatID}/items`, { message });
   //   return response.data.data;
   // }
-    sendMessage: (chatID, message) => 
-    apiClient.post('/chat/session/item', { 
-      chatID,    
-      message   
-    })
+  sendMessage: (chatID, message) => 
+  apiClient.post('/chat/session/item', { 
+    chatID,    
+    message   
+  }),
+
+  getSelectedChats: async (chatID) => {
+    const response = await apiClient.get(`/chat/session/${chatID}`);
+    return response.data.data;
+  }
 };
 
 // ApiChat.js
