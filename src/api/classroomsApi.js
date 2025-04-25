@@ -3,6 +3,7 @@ import apiClient from './index.js';
 export const fetchClassrooms = async () => {
   try {
     const response = await apiClient.get('/classroom/list');
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching classrooms data:', error);

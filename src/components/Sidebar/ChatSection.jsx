@@ -1,10 +1,12 @@
-import React from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Collapse, ListGroup, Dropdown } from 'react-bootstrap';
 import { FaComments, FaEllipsisV } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchChats } from '../../stores/slices/chatSlice';
 
 function ChatsSection({
-  chats,
   chatDropdownOpen,
   setChatDropdownOpen,
   activeMenuId,
@@ -12,10 +14,36 @@ function ChatsSection({
   setModalContent,
   setShowModal
 }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { chats, loading, error } = useSelector((state) => state.chat);
+  // const { chats, loading, error } = useSelector((state) => ({
+  //   chats: state.chat.chats, // Should be array of chat objects
+  //   loading: state.chat.loading,
+  //   error: state.chat.error
+  // }));
+
+  useEffect(() => {
+    dispatch(fetchChats());
+  }, [dispatch]);
+
   const handleAction = (action, name) => {
     setModalContent({ name, type: "Chat", action });
     setShowModal(true);
   };
+
+  if (error) return (
+    <div className="alert alert-danger mt-3">
+      Error: {error}
+      <Button 
+        variant="link" 
+        onClick={() => dispatch(fetchChats())}
+        className="ms-2"
+      >
+        Retry
+      </Button>
+    </div>
+  );
 
   return (
     <>
@@ -24,44 +52,51 @@ function ChatsSection({
         className="w-100 text-start mt-3" 
         onClick={() => setChatDropdownOpen(!chatDropdownOpen)}
       >
-        <FaComments className="me-2" /> My Chats
+        <FaComments className="me-2" /> My Chat
       </Button>
       <Collapse in={chatDropdownOpen}>
         <ListGroup>
-          {chats.map((chat, index) => (
-            <ListGroup.Item 
-              key={index} 
-              className="d-flex justify-content-between align-items-center" 
-              style={{ cursor: "pointer" }}
-            >
-              {chat}
-              <Dropdown 
-                show={activeMenuId === chat} 
-                onToggle={() => toggleMenu(chat)} 
-                align="end"
+          {loading ? (
+            <ListGroup.Item>Loading chats...</ListGroup.Item>
+          ) : chats.length === 0 ? (
+            <ListGroup.Item>No chats available</ListGroup.Item>
+          ) : (
+            chats.map((chat) => (
+              <ListGroup.Item 
+                key={chat.chatID} 
+                className="d-flex justify-content-between align-items-center" 
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/chat/${chat.chatID}`)}
               >
-                <Dropdown.Toggle 
-                  bsPrefix="custom-dropdown-toggle" 
-                  as={Button} 
-                  variant="light" 
-                  size="sm"
+                {chat.chatTitle}
+                <Dropdown 
+                  show={activeMenuId === chat.chatID} 
+                  onToggle={() => toggleMenu(chat.chatID)} 
+                  align="end"
                 >
-                  <FaEllipsisV />
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => handleAction("manage", chat)}>
-                    Kelola
-                  </Dropdown.Item>
-                  <Dropdown.Item 
-                    onClick={() => handleAction("delete", chat)} 
-                    className="text-danger"
+                  <Dropdown.Toggle 
+                    bsPrefix="custom-dropdown-toggle" 
+                    as={Button} 
+                    variant="light" 
+                    size="sm"
                   >
-                    Hapus
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </ListGroup.Item>
-          ))}
+                    <FaEllipsisV />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleAction("manage", chat.chatTitle)}>
+                      Kelola
+                    </Dropdown.Item>
+                    <Dropdown.Item 
+                      onClick={() => handleAction("delete", chat.chatTitle)} 
+                      className="text-danger"
+                    >
+                      Hapus
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </ListGroup.Item>
+            ))
+          )}
         </ListGroup>
       </Collapse>
     </>
@@ -69,7 +104,6 @@ function ChatsSection({
 }
 
 ChatsSection.propTypes = {
-  chats: PropTypes.array.isRequired,
   chatDropdownOpen: PropTypes.bool.isRequired,
   setChatDropdownOpen: PropTypes.func.isRequired,
   activeMenuId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
