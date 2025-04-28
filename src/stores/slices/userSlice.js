@@ -86,16 +86,26 @@ export const userSlice = createSlice({
       .addCase(getListModelsAsync.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getListStudentsAsync.fulfilled, (state, action) => {
+      // .addCase(getListStudentsAsync.fulfilled, (state, action) => {
+      //   state.status = 'idle';
+      //   state.models = action.payload;
+      //   state.error = null;
+      // })
+      // .addCase(getListStudentsAsync.rejected, (state) => {
+      //   state.status = 'failed';
+      //   state.models = initialModels;
+      //   state.error = 'Failed to fetch user data';
+      // });
+      .addCase(getListModelsAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.models = action.payload;
         state.error = null;
       })
-      .addCase(getListStudentsAsync.rejected, (state) => {
+      .addCase(getListModelsAsync.rejected, (state) => {
         state.status = 'failed';
         state.models = initialModels;
         state.error = 'Failed to fetch user data';
-      });
+      });      
   },
 });
 

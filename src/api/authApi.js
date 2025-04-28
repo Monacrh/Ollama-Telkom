@@ -12,7 +12,7 @@ export const login = async (userData) => {
 
 export const registration = async (userData) => {
   try {
-    const response = await apiClient.get('/auth/registration', userData);
+    const response = await apiClient.post('/auth/registration', userData);
     return response.data;
   } catch (error) {
     console.error('Error registration:', error);

@@ -1,0 +1,178 @@
+.header2 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #d21313;
+    align-self: center;
+    height: 59px;
+}
+
+.header-logo {
+    margin-left: 20px;
+}
+
+.wrapper-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: relative;
+    background: url('/GKU.png') center;
+    background-size: cover;
+}
+
+.wrapper {
+    display: flex;
+    width: 1019px;
+    height: 398px;
+    background: rgb(255, 255, 255);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.left, .right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+.left {
+    flex: 1.5;
+    background-color: white;
+    justify-content: center;
+}
+
+.logo {
+    align-self: center;
+    margin-bottom: 120px;
+}
+
+.welcome-text {
+    font-size: 1.5em;
+    color: grey;
+}
+
+.right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #af2929;
+    border-radius: 20px;
+}
+
+.right h1 {
+    font-size: 30px;
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.input-box {
+    position: relative;
+    width: 300px;
+    height: 50px;
+    background: rgb(255, 255, 255);
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    border: 2px solid rgba(255, 255, 255, .2);
+    align-self: center;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 0 20px;
+    color: #333;
+}
+
+.input-box input::placeholder {
+    color: grey;
+}
+
+.wrapper button {
+    width: 110px;
+    height: 45px;
+    background: white;
+    border: none;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 18px;
+    color: #af2929;
+    font-weight: 700;
+    margin-top: 20px;
+    align-self: center;
+    margin-left: 190px;
+}
+
+.wrapper button:hover {
+    background: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+
+    .left, .right {
+        padding: 20px;
+    }
+
+    .logo {
+        margin-bottom: 60px;
+    }
+
+    .right h1 {
+        font-size: 24px;
+    }
+
+    .input-box {
+        width: 100%;
+    }
+
+    .wrapper button {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 480px) {
+    .wrapper {
+        width: 95%;
+    }
+
+    .left {
+        padding: 15px;
+    }
+
+    .right {
+        padding: 15px;
+    }
+
+    .right h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .input-box {
+        width: 100%;
+    }
+
+    .wrapper button {
+        width: 100%;
+        margin-top: 15px;
+    }
+}

@@ -58,7 +58,7 @@ function ChatsSection({
         <ListGroup>
           {loading ? (
             <ListGroup.Item>Loading chats...</ListGroup.Item>
-          ) : chats.length === 0 ? (
+          ) : !chats || chats.length === 0 ? (
             <ListGroup.Item>No chats available</ListGroup.Item>
           ) : (
             chats.map((chat) => (

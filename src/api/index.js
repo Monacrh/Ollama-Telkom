@@ -9,10 +9,10 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    if (apiAuthKey) {
-      config.headers['X-AUTH-KEY'] = apiAuthKey;
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['X-AUTH-KEY'] = token; // Use X-AUTH-KEY header here
     }
-    
     return config;
   },
   (error) => {
